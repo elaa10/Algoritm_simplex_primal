@@ -38,7 +38,7 @@ def gaseste_coloana_pivot(T, rand_pivot):
 
 def pivotare(T, rand_pivot, col_pivot):
     """
-    Aplica transformarile Gauss-Jordan specifice tabelului simplex
+    Aplica transformarile Gauss-Jordan.
     """
     rows, cols = T.shape
     T_nou = np.zeros_like(T)
