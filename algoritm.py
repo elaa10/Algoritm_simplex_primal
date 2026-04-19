@@ -1,61 +1,62 @@
-# --- PERSOANA 2: PIVOTARE ȘI OPERAȚII GAUSS-JORDAN ---
 import numpy as np
 
-def gaseste_coloana_pivot(tabel):
-    """
-    Caută primul element strict pozitiv pe ultima linie (linia d0j).
-    Dacă toate sunt <= 0, baza e optimă (returnează -1).
-    """
-    m, n_plus_1 = tabel.shape
-    n = n_plus_1 - 1
-    linia_evaluare = tabel[m - 1, :n]
+# --- GASESTE PIVOTUL SI SOLUTIA ---
 
-    max_val = np.max(linia_evaluare)
-    # Folosim o toleranță mică (1e-9) pentru a evita erorile de tip floating-point
+def gaseste_rand_pivot(T):
+    """
+    Cauta max α0j pe ultima coloana (excluzand ultima linie care e b).
+    Returneaza indexul randului sau -1 daca baza e optima.
+    """
+    col_α0j = T[:-1, -1]
+    max_val = np.max(col_α0j)
+
+    # Toleranta pentru erori float
     if max_val > 1e-9:
-        # Alege coloana cu cel mai mare element strict pozitiv (cum e uzual)
-        return int(np.argmax(linia_evaluare))
-    return -1  # Baza este optimă
+        return int(np.argmax(col_α0j))
+    return -1
 
 
-def gaseste_linia_pivot(tabel, col_pivot):
+def gaseste_coloana_pivot(T, rand_pivot):
     """
-    Efectuează testul raportului minim: împarte coloana b la coloana pivot.
-    Sunt luate în calcul DOAR elementele strict pozitive din coloana pivot.
+    Testul raportului minim calculat pe coloanele bazei.
+    Imparte linia 'b' la elementele strict pozitive din randul pivot ales.
     """
-    m, n_plus_1 = tabel.shape
-    num_restr = m - 1
-
+    m = T.shape[1] - 1
     raport_min = float('inf')
-    linie_pivot = -1
+    col_pivot = -1
 
-    for i in range(num_restr):
-        element_pivot = tabel[i, col_pivot]
-        if element_pivot > 1e-9:  # Luăm doar numerele strict pozitive
-            raport = tabel[i, -1] / element_pivot
+    for j in range(m):
+        element = T[rand_pivot, j]
+        if element > 1e-9:
+            raport = T[-1, j] / element
             if raport < raport_min:
                 raport_min = raport
-                linie_pivot = i
+                col_pivot = j
 
-    return linie_pivot
+    return col_pivot
 
 
-def actualizare_gauss_jordan(tabel, linie_pivot, col_pivot):
+def pivotare(T, rand_pivot, col_pivot):
     """
-    Aplică transformările Gauss-Jordan pe tot tabelul.
+    Aplica transformarile Gauss-Jordan specifice tabelului simplex
     """
-    m, cols = tabel.shape
-    noul_tabel = np.zeros_like(tabel)
-    element_pivot_val = tabel[linie_pivot, col_pivot]
+    rows, cols = T.shape
+    T_nou = np.zeros_like(T)
+    p = T[rand_pivot, col_pivot]
 
-    # 1. Linia pivot se împarte la valoarea pivotului
-    noul_tabel[linie_pivot, :] = tabel[linie_pivot, :] / element_pivot_val
+    for i in range(rows):
+        for j in range(cols):
+            if i == rand_pivot and j == col_pivot:
+                # 1. Elementul pivot devine 1/pivot
+                T_nou[i, j] = 1.0 / p
+            elif i == rand_pivot:
+                # 2. Linia pivot se imparte la OPUSUL pivotului (-p)
+                T_nou[i, j] = -T[i, j] / p
+            elif j == col_pivot:
+                # 3. Coloana pivot se imparte la pivot (p)
+                T_nou[i, j] = T[i, j] / p
+            else:
+                # 4. Regula dreptunghiului pentru restul elementelor
+                T_nou[i, j] = T[i, j] - (T[i, col_pivot] * T[rand_pivot, j]) / p
 
-    # 2. Toate celelalte linii (inclusiv linia de evaluare) se transformă prin Regula Dreptunghiului
-    for i in range(m):
-        if i != linie_pivot:
-            factor_anulare = tabel[i, col_pivot]
-            # Noua_linie = Linia_Veche - Linia_Pivot_Noua * Elementul_pe_coloana_pivot_vechi
-            noul_tabel[i, :] = tabel[i, :] - (noul_tabel[linie_pivot, :] * factor_anulare)
-
-    return noul_tabel
+    return T_nou
