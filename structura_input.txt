@@ -1,0 +1,14 @@
+
+Structura fisierului de input
+
+Linia 1: m n -> (m = numarul de restrictii, n = numarul de variabile)
+Linia 2: vectorul c -> (coeficientii functiei scop, separati prin spatiu)
+Urmatoarele 'm' linii: matricea A -> (coeficientii restrictiilor)
+Linia m + 3: vectorul b -> (termenii liberi)
+
+Exemplu de fisier de input:
+2 4
+-4 -2 -1 -5
+0 2 1 4
+1 3 0 1
+10 9
