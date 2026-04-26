@@ -4,4 +4,4 @@
 1 3 0 1
 10 9
 
-# problema 1 de la laborator
+#  problema 1 de la laborator

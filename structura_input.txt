@@ -7,6 +7,7 @@ Urmatoarele 'm' linii: matricea A -> (coeficientii restrictiilor)
 Linia m + 3: vectorul b -> (termenii liberi)
 
 Exemplu de fisier de input:
+
 2 4
 -4 -2 -1 -5
 0 2 1 4
