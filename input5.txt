@@ -1,0 +1,7 @@
+2 4
+-1 -2 -10 -1
+2 1 1 3
+1 2 4 1
+4 5
+
+# exemplu fara baza canonica; exosta bpa dar nu este optima
