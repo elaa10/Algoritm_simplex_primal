@@ -1,6 +1,7 @@
+
 # --- AFISARE ---
 
-FISIER_INTRARE = "input2.txt"
+FISIER_INTRARE = "input1.txt"
 
 from algoritm import *
 from input_output import *
@@ -29,9 +30,16 @@ def ruleaza_simplex():
     """Functia principala care leaga toate modulele."""
 
     m, n, c, A, b, baza = citeste_date(FISIER_INTRARE)
+
+    # Daca nu s-a putut gasi o baza primal admisibila, oprim executia.
+    if baza is None:
+        print("\n" + "=" * 60)
+        print("Algoritmul simplex primal nu poate fi aplicat fara o b.p.a. initiala.")
+        return
+
     T, non_baza = initializare_tabel(m, n, c, A, b, baza)
 
-    iteratie = 0
+    iteratie = 1
     afisare_tabel(T, baza, non_baza, iteratie)
 
     while True:
